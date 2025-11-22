@@ -1,0 +1,236 @@
+# VintageGAN Training Configuration
+# Specification Reference: Sections 4.1, 4.2, 4.3
+
+# ===========================
+# Dataset Configuration
+# ===========================
+dataset:
+  imagenet_path: "data/imagenet_subset"
+  filmset_path: "data/filmset"
+  synthetic_pairs_path: "data/synthetic_pairs"
+  validation_path: "data/validation"
+  
+  # Dataset sizes (Section 3.3)
+  num_train_images: 10000
+  num_val_images: 1000
+  variants_per_image: 5  # Training
+  val_variants_per_image: 3  # Validation
+  
+  # Image preprocessing
+  image_size: 512
+  center_crop: 512
+  normalize_range: [-1, 1]  # Tanh output range
+
+# ===========================
+# Data Augmentation (Section 3.3)
+# ===========================
+augmentation:
+  horizontal_flip_prob: 0.5
+  random_crop_size: 480
+  brightness_jitter: 0.1  # ±10%
+  contrast_jitter: 0.1    # ±10%
+  apply_to_both: true  # Apply to both clean and defected images
+
+# ===========================
+# Model Architecture
+# ===========================
+model:
+  generator:
+    base_model: "unet_resnet34"  # Section 2.1
+    in_channels: 3
+    out_channels: 3
+    condition_dim: 6  # [grain, scratch, dust, vignette, color_shift, blur]
+    encoder_filters: [64, 128, 256, 512]
+    use_spectral_norm: true  # Section 2.1 Implementation Notes
+    dropout_rate: 0.3  # Decoder dropout
+    use_self_attention: true  # Section 2.3
+    attention_resolution: 32  # Bottleneck resolution
+    
+  discriminator:
+    type: "patchgan"  # Section 2.2
+    in_channels: 9  # RGB (3) + condition (6 spatially replicated)
+    base_filters: 64
+    num_layers: 4
+    kernel_size: 4
+    stride: 2
+    use_spectral_norm: true
+    use_instance_norm: true
+    leaky_relu_slope: 0.2
+    output_patches: [32, 32]  # 32×32 patch predictions
+
+# ===========================
+# Conditioning Vector (Section 2.1.1)
+# ===========================
+conditioning:
+  parameters:
+    - grain_intensity      # [0.0, 1.0]
+    - scratch_density      # [0.0, 1.0]
+    - dust_count           # [0.0, 1.0]
+    - vignette_strength    # [0.0, 1.0]
+    - color_shift          # [0.0, 1.0]
+    - blur_amount          # [0.0, 1.0]
+  
+  integration_method: "concatenation"  # Spatial replication + concatenation
+  mlp_hidden_dim: 128
+  mlp_output_dim: 512
+
+# ===========================
+# Training Strategy (Section 4.1 - NoGAN)
+# ===========================
+training:
+  # Phase 1: Generator Pretraining (Epochs 1-40)
+  phase1_pretrain:
+    epochs: 40
+    optimizer: "adam"
+    learning_rate: 2.0e-4
+    betas: [0.5, 0.999]
+    scheduler: "cosine_annealing"
+    
+    # Loss weights
+    pixel_loss_weight: 1.0
+    perceptual_loss_weight: 0.1
+    
+  # Phase 2: Discriminator Pretraining (Epochs 41-50)
+  phase2_critic:
+    epochs: 10
+    optimizer: "adam"
+    learning_rate: 2.0e-4
+    betas: [0.5, 0.999]
+    
+  # Phase 3: GAN Fine-Tuning (Epochs 51-60)
+  phase3_gan:
+    epochs: 10
+    optimizer: "adam"
+    learning_rate: 2.0e-5  # 10× lower than pretraining
+    betas: [0.5, 0.999]
+    
+    # Loss weights (Section 4.1)
+    adversarial_loss_weight: 1.0
+    pixel_loss_weight: 0.5
+    perceptual_loss_weight: 0.1
+    consistency_loss_weight: 0.3
+    
+    # Training schedule
+    d_updates_per_batch: 1
+    g_updates_per_batch: 1
+    
+    # Label smoothing
+    real_label_smoothing: 0.9
+    fake_label_smoothing: 0.1
+    
+    # Early stopping
+    patience: 3  # Stop if FID plateaus for 3 epochs
+
+# ===========================
+# Hardware Configuration (Section 6.2)
+# ===========================
+hardware:
+  device: "cuda"  # Auto-detect if available
+  batch_size: 8  # RTX 3050 6GB VRAM
+  num_workers: 4  # CPU cores for data loading
+  pin_memory: true
+  
+  # Memory optimization
+  mixed_precision: true  # FP16 training
+  gradient_accumulation_steps: 4  # Effective batch size: 32
+  gradient_checkpointing: true  # Trade compute for memory
+  
+  # Expected VRAM usage
+  expected_vram_gb: 5.5  # With all optimizations
+
+# ===========================
+# Perceptual Loss (Section 4.1)
+# ===========================
+perceptual_loss:
+  backbone: "vgg16"
+  pretrained: true
+  feature_layers: ["conv3_3", "conv4_3"]  # Up to conv4_3
+  normalize_input: true  # VGG expects [0, 1] range
+
+# ===========================
+# Consistency Loss (Section 4.2)
+# ===========================
+consistency_loss:
+  use_detectors: true
+  detector_checkpoint_dir: "checkpoints/detectors"
+  detectors:
+    - grain_detector
+    - scratch_detector
+    - dust_detector
+    - vignette_detector
+    - color_shift_detector
+    - blur_detector
+
+# ===========================
+# Checkpointing (Section 4.3)
+# ===========================
+checkpointing:
+  save_dir: "checkpoints"
+  save_every_n_epochs: 5
+  save_best_only: false  # Keep all checkpoints
+  metric_for_best: "fid"  # Track best based on FID score
+  save_optimizer_state: true
+  
+# ===========================
+# Logging & Monitoring
+# ===========================
+logging:
+  use_tensorboard: true
+  use_wandb: true
+  wandb_project: "VintageGAN"
+  wandb_entity: null  # Set your wandb username
+  
+  log_every_n_steps: 50
+  save_images_every_n_epochs: 2
+  num_sample_images: 10
+  
+  # Metrics to track
+  metrics:
+    - "loss/generator"
+    - "loss/discriminator"
+    - "loss/pixel"
+    - "loss/perceptual"
+    - "loss/consistency"
+    - "metrics/fid"
+    - "metrics/ssim"
+    - "metrics/psnr"
+
+# ===========================
+# Evaluation (Section 5)
+# ===========================
+evaluation:
+  val_every_n_epochs: 1
+  calculate_fid: true
+  calculate_ssim: true
+  calculate_psnr: true
+  calculate_is: false  # Inception Score (optional)
+  
+  # FID calculation
+  fid_batch_size: 50
+  fid_dims: 2048
+  
+  # Target metrics (Section 1.3)
+  targets:
+    fid: 50.0      # FID < 50
+    ssim: 0.75     # SSIM > 0.75
+    psnr: 22.0     # PSNR > 22 dB
+    condition_mae: 0.15  # Condition accuracy MAE < 0.15
+
+# ===========================
+# Reproducibility
+# ===========================
+reproducibility:
+  seed: 42
+  deterministic: true
+  benchmark: false  # Set to true for performance, false for reproducibility
+
+# ===========================
+# Paths
+# ===========================
+paths:
+  project_root: "."
+  data_root: "data"
+  checkpoint_dir: "checkpoints"
+  log_dir: "logs"
+  output_dir: "outputs"
+  cache_dir: ".cache"
