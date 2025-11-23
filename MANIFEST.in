@@ -1,0 +1,17 @@
+include README.md
+include LICENSE
+include requirements.txt
+include COMPLETE_IMPLEMENTATION.md
+include DAYS_1_7_COMPLETION.md
+include DAY_1_2_COMPLETION.md
+
+recursive-include configs *.yaml
+recursive-include notebooks *.ipynb
+
+exclude .gitignore
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude data *
+recursive-exclude checkpoints *
+recursive-exclude logs *
+recursive-exclude outputs *

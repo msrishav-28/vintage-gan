@@ -1,15 +1,14 @@
 """
 VintageGAN Training Module
 
-This package contains dataset loaders, training loops, and utilities
-for training the VintageGAN model.
+Data loading and training utilities for VintageGAN.
 
 Modules:
-    dataset: PyTorch datasets and dataloaders
+    dataset: Dataset and DataLoader implementations
     download_data: Data download and preparation utilities
-    pretrain: Generator pretraining (Phase 1)
-    gan_train: GAN fine-tuning (Phase 3)
-    losses: Loss functions (perceptual, pixel, consistency)
+    losses: Loss functions for training
+    pretrain: Generator pretraining script
+    gan_train: GAN training script
 """
 
 from .dataset import (
@@ -17,7 +16,9 @@ from .dataset import (
     VintageGANDataset,
     FilmSetDataset,
     create_dataloaders,
-    validate_dataloader
+    validate_dataloader,
+    tensor_to_numpy,
+    numpy_to_tensor
 )
 
 from .download_data import (
@@ -27,20 +28,37 @@ from .download_data import (
     create_dummy_dataset
 )
 
+from .losses import (
+    VGGPerceptualLoss,
+    PixelLoss,
+    AdversarialLoss,
+    ConsistencyLoss,
+    VintageGANLoss
+)
+
 __all__ = [
-    # Dataset classes
+    # Datasets
     'ImageNetSubsetDataset',
     'VintageGANDataset',
     'FilmSetDataset',
     'create_dataloaders',
     'validate_dataloader',
     
-    # Data utilities
+    # Utilities
+    'tensor_to_numpy',
+    'numpy_to_tensor',
     'download_imagenet_subset',
     'download_filmset',
     'verify_dataset',
     'create_dummy_dataset',
+    
+    # Losses
+    'VGGPerceptualLoss',
+    'PixelLoss',
+    'AdversarialLoss',
+    'ConsistencyLoss',
+    'VintageGANLoss'
 ]
 
-__version__ = '0.1.0'
+__version__ = '1.0.0'
 __author__ = 'VintageGAN Project'

@@ -48,8 +48,14 @@ pandas>=2.0.0  # For results analysis
 # ===========================
 # Code Quality
 # ===========================
-black>=23.0.0
-pytest>=7.4.0
+black>=22.0.0
+flake8>=4.0.0
+isort>=5.12.0
+
+# Testing & Automation
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pre-commit>=3.0.0
 mypy>=1.5.0
 
 # ===========================
