@@ -328,16 +328,23 @@ class Generator(nn.Module):
         """Initialize network weights (spec: He initialization)."""
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                if m.bias is not None:
+                # Check if weight exists (may be wrapped by SpectralNorm)
+                if hasattr(m, 'weight') and m.weight is not None:
+                    nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                elif hasattr(m, 'weight_bar'):
+                    # SpectralNorm stores weight in weight_bar
+                    nn.init.kaiming_normal_(m.weight_bar, mode='fan_out', nonlinearity='relu')
+                if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.Linear):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                nn.init.constant_(m.bias, 0)
+                if hasattr(m, 'weight') and m.weight is not None:
+                    nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if hasattr(m, 'bias') and m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
             elif isinstance(m, (nn.BatchNorm2d, nn.InstanceNorm2d)):
-                if m.weight is not None:
+                if hasattr(m, 'weight') and m.weight is not None:
                     nn.init.constant_(m.weight, 1)
-                if m.bias is not None:
+                if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.constant_(m.bias, 0)
     
     def forward(

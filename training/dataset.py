@@ -252,8 +252,7 @@ class VintageGANDataset(Dataset):
             augmentation = A.Compose([
                 A.HorizontalFlip(p=config.get('horizontal_flip_prob', 0.5)),
                 A.RandomResizedCrop(
-                    height=512, 
-                    width=512, 
+                    size=(512, 512),  # New API: size as tuple
                     scale=(0.9, 1.0),  # 480×480 to 512×512
                     p=0.5
                 ),

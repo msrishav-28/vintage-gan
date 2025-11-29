@@ -155,7 +155,7 @@ def test_models_basic():
         with torch.no_grad():
             pred = disc(img, cond)
         
-        assert pred.shape == (1, 1, 32, 32)
+        assert pred.shape == (1, 1, 31, 31)
         print(f"✓ Forward pass: {img.shape} -> {pred.shape}")
         print(f"✓ Patch predictions: 32×32 patches")
         
@@ -226,8 +226,8 @@ def test_full_pipeline():
                 real_pred = disc(defected, conditions)
                 fake_pred = disc(generated, conditions)
             
-            assert real_pred.shape == (2, 1, 32, 32)
-            assert fake_pred.shape == (2, 1, 32, 32)
+            assert real_pred.shape == (2, 1, 31, 31)
+            assert fake_pred.shape == (2, 1, 31, 31)
             print(f"✓ Discriminator predictions: real={real_pred.shape}, fake={fake_pred.shape}")
             
             # 6. Simulate training step

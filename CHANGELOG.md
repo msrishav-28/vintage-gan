@@ -5,6 +5,33 @@ All notable changes to VintageGAN will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-11-29
+
+### Fixed
+- SpectralNorm weight initialization bug in Generator and Discriminator
+- OpenCV headless compatibility for server environments
+- Albumentations API update (RandomResizedCrop size parameter)
+- Import error in training/__init__.py (removed non-existent exports)
+- Test assertions for actual discriminator output size (31×31 not 32×32)
+- Roundtrip tensor conversion test with realistic tolerance
+- combined.py now works both as module and direct script
+
+### Updated
+- Documentation now reflects accurate model specifications:
+  - Generator: ~12M params (not 50-70M)
+  - Discriminator: ~2.8M params (not 12M)
+  - Patch size: 31×31 (not 32×32)
+- All 27 pytest tests now pass
+- All 7 module self-tests now pass
+
+### Removed
+- Redundant documentation files (consolidated into README):
+  - AUTOMATION.md, AUTOMATION_SUMMARY.md, COMPLETE_AUTOMATION.md, TRAINING_AUTOMATION.md
+  - FINAL_SUMMARY.md, PROJECT_STATUS.md, plan.md
+- Redundant setup scripts:
+  - setup_and_train.py, setup_project.py, validate_day1_2.py, compile_notebooks.py
+- Runtime files (pipeline_state.json)
+
 ## [1.0.0] - 2024-11
 
 ### Added
@@ -42,8 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Performance
 - < 1 second inference per 512×512 image
 - Trains on 6GB VRAM (RTX 3050)
-- ~50M parameters in generator
-- ~12M parameters in discriminator
+- ~12M parameters in generator (optimized for 6GB VRAM)
+- ~2.8M parameters in discriminator
 - Targets: FID < 50, SSIM > 0.75, PSNR > 22 dB
 
 ### Technical

@@ -77,23 +77,7 @@ Use the sliders to control defect parameters in real-time!
 
 ## 4. Train Your Model (FULLY AUTOMATED!)
 
-### Option A: One-Command Automation (Recommended)
-
-```bash
-# Step 1: Download dataset
-python training/download_data.py --mode full --num-train 10000 --num-val 1000
-
-# Step 2: Run automated setup (asks questions, then runs everything)
-python setup_and_train.py
-
-# That's it! Wait ~10 hours and get:
-# - Trained model checkpoints
-# - All evaluation metrics
-# - Figures and tables for paper
-# - Everything ready!
-```
-
-### Option B: Zero-Click Automation (No Questions)
+### Option A: Full Automation (Recommended)
 
 ```bash
 # Step 1: Download dataset
@@ -109,7 +93,7 @@ python run_full_pipeline.py
 # - Results generation (automatic)
 ```
 
-### Option C: Quick Test (30 minutes)
+### Option B: Quick Test (30 minutes)
 
 ```bash
 # Use dummy data for quick testing
@@ -118,19 +102,16 @@ python run_full_pipeline.py --quick-test
 # Tests entire pipeline in ~30 minutes
 ```
 
-### Option D: Manual Step-by-Step
+### Option C: Manual Step-by-Step
 
 ```bash
 # If you prefer manual control
 # Step 1: Get training data
 python training/download_data.py --mode full --num-train 10000 --num-val 1000
 
-# Step 2: Train (manual)
-vintagegan-pretrain --config configs/training_config.yaml
-vintagegan-train --generator-checkpoint checkpoints/generator_pretrain_best.pth
-
-# Step 3: Generate results
-python compile_notebooks.py --format html pdf
+# Step 2: Train
+python training/pretrain.py --config configs/training_config.yaml
+python training/gan_train.py --generator-checkpoint checkpoints/generator_pretrain_best.pth
 ```
 
 ---
@@ -159,14 +140,16 @@ output.save('output.jpg')
 ## 6. Generate Results for Paper
 
 ```bash
-# Automatically generate all figures and tables
-python compile_notebooks.py --format html pdf
+# Run the full pipeline which includes results generation
+python run_full_pipeline.py
+
+# Or run evaluation notebook manually
+jupyter notebook notebooks/results_analysis.ipynb
 
 # Results saved to: results/
-# - Metrics (JSON, CSV, LaTeX)
+# - Metrics (JSON, CSV)
 # - Figures (PNG at 300 DPI)
 # - Training curves
-# - Comparison tables
 ```
 
 ---

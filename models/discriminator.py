@@ -172,13 +172,18 @@ class Discriminator(nn.Module):
         """Initialize network weights."""
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.normal_(m.weight, 0.0, 0.02)
-                if m.bias is not None:
+                # Check if weight exists (may be wrapped by SpectralNorm)
+                if hasattr(m, 'weight') and m.weight is not None:
+                    nn.init.normal_(m.weight, 0.0, 0.02)
+                elif hasattr(m, 'weight_bar'):
+                    # SpectralNorm stores weight in weight_bar
+                    nn.init.normal_(m.weight_bar, 0.0, 0.02)
+                if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.constant_(m.bias, 0)
             elif isinstance(m, (nn.BatchNorm2d, nn.InstanceNorm2d)):
-                if m.weight is not None:
+                if hasattr(m, 'weight') and m.weight is not None:
                     nn.init.normal_(m.weight, 1.0, 0.02)
-                if m.bias is not None:
+                if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.constant_(m.bias, 0)
     
     def forward(

@@ -175,9 +175,9 @@ training:
 ### ✅ Core Architecture
 
 **Neural Networks:**
-- U-Net Generator with ResNet34-inspired encoder (~50M parameters)
+- U-Net Generator with ResNet34-inspired encoder (~12M parameters)
 - Self-attention module at bottleneck for long-range dependencies
-- PatchGAN Discriminator with 32×32 patch predictions (~12M parameters)
+- PatchGAN Discriminator with 31×31 patch predictions (~2.8M parameters)
 - Dual conditioning injection (spatial replication + MLP projection)
 - Spectral normalization for training stability
 - Multi-scale discriminator variant available
@@ -355,15 +355,11 @@ See `.github/workflows/ci.yml` for CI configuration.
 After downloading the dataset, everything is automated:
 
 ```bash
-# Interactive guided setup (easiest)
-python setup_and_train.py
-# Asks questions, then runs everything automatically (~10 hours)
-
-# OR: Fully automated (no questions)
+# Fully automated pipeline
 python run_full_pipeline.py
 # Downloads, trains, evaluates, generates results - all automatic!
 
-# OR: Quick test with dummy data
+# Quick test with dummy data (recommended first)
 python run_full_pipeline.py --quick-test
 # Tests full pipeline in ~30 minutes
 ```
@@ -376,8 +372,6 @@ python run_full_pipeline.py --quick-test
 - ✅ Results generation (figures, tables)
 
 **You just wait ~10 hours and get all results!**
-
-See [TRAINING_AUTOMATION.md](TRAINING_AUTOMATION.md) for details.
 
 ### **Manual Training (Step-by-Step)**
 
@@ -477,8 +471,8 @@ print(metrics)
 Generate all results for your research paper automatically:
 
 ```bash
-# Compile all result notebooks (generates figures, tables, metrics)
-python compile_notebooks.py --format html pdf
+# Run the full pipeline which includes results generation
+python run_full_pipeline.py
 
 # Results will be saved to: results/
 # - quantitative_metrics.json
@@ -486,7 +480,6 @@ python compile_notebooks.py --format html pdf
 # - results_table.tex (for LaTeX)
 # - sample_results.png (figure for paper)
 # - training_curves.png (figure for paper)
-# - results_summary.json
 
 # Or run notebooks manually
 jupyter notebook notebooks/results_analysis.ipynb
@@ -559,14 +552,13 @@ This is an academic project. Contributions are welcome after initial completion:
 
 ## 🙏 Acknowledgments
 
-- **Specification**: Complete technical specification in `plan.md`
-- **Development**: Claude Sonnet 4.5 via Windsurf IDE
+- **Development**: Claude via VS Code
 - **References**: Based on Pix2Pix, ControlNet, and Film-GAN research
 - **Dataset**: ImageNet-1k subset for training
 
 ---
 
 **Status**: ✅ Production Ready  
-**Version**: 1.0.0  
-**Last Updated**: November 2024  
+**Version**: 1.0.1  
+**Last Updated**: November 2025  
 **Code**: 12,000+ lines | **Quality**: Publication-Ready

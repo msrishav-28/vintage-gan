@@ -17,8 +17,6 @@ from .dataset import (
     FilmSetDataset,
     create_dataloaders,
     validate_dataloader,
-    tensor_to_numpy,
-    numpy_to_tensor
 )
 
 from .download_data import (
@@ -45,8 +43,6 @@ __all__ = [
     'validate_dataloader',
     
     # Utilities
-    'tensor_to_numpy',
-    'numpy_to_tensor',
     'download_imagenet_subset',
     'download_filmset',
     'verify_dataset',

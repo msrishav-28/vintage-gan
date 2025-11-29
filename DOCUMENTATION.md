@@ -71,8 +71,8 @@ Input Image (512×512×3) + Condition Vector (6D)
 - MLP projection at bottleneck (6D → 128D → 512D)
 - Dual injection ensures both early and late feature control
 
-**Parameters:** ~50-70M  
-**Memory:** ~280 MB (FP32), ~140 MB (FP16)
+**Parameters:** ~12M (optimized for 6GB VRAM)  
+**Memory:** ~45 MB (FP32), ~23 MB (FP16)
 
 ### Discriminator
 
@@ -81,15 +81,15 @@ Input Image (512×512×3) + Condition Vector (6D)
 **Architecture:**
 - Input: 9 channels (RGB + 6D condition)
 - 5 convolutional layers
-- Output: 32×32 patch predictions (1024 patches)
+- Output: 31×31 patch predictions (961 patches)
 
 **Features:**
 - Spectral normalization
 - Instance normalization
 - LeakyReLU (α=0.2)
 
-**Parameters:** ~12M  
-**Memory:** ~48 MB (FP32), ~24 MB (FP16)
+**Parameters:** ~2.8M  
+**Memory:** ~11 MB (FP32), ~5.5 MB (FP16)
 
 ### Training Strategy
 
@@ -435,6 +435,6 @@ For questions, issues, or contributions:
 
 ---
 
-**Last Updated:** November 2024  
-**Version:** 1.0.0  
+**Last Updated:** November 2025  
+**Version:** 1.0.1  
 **Status:** Production Ready

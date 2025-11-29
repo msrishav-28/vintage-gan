@@ -20,12 +20,25 @@ Date: 2024
 from typing import Dict, Tuple
 import numpy as np
 
-from .grain import generate_film_grain, generate_colored_grain
-from .scratches import generate_scratches
-from .dust import generate_dust
-from .vignette import generate_vignette
-from .color_shift import generate_color_shift
-from .blur import generate_blur
+# Handle both package import and direct script execution
+try:
+    from .grain import generate_film_grain, generate_colored_grain
+    from .scratches import generate_scratches
+    from .dust import generate_dust
+    from .vignette import generate_vignette
+    from .color_shift import generate_color_shift
+    from .blur import generate_blur
+except ImportError:
+    # Direct script execution - use absolute imports
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    from defects.grain import generate_film_grain, generate_colored_grain
+    from defects.scratches import generate_scratches
+    from defects.dust import generate_dust
+    from defects.vignette import generate_vignette
+    from defects.color_shift import generate_color_shift
+    from defects.blur import generate_blur
 
 
 def apply_vintage_defects(
