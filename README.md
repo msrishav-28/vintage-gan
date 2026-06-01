@@ -1,3 +1,16 @@
+---
+license: mit
+library_name: pytorch
+pipeline_tag: image-to-image
+tags:
+  - computer-vision
+  - image-to-image
+  - gan
+  - vintage
+  - pytorch
+  - academic-project
+---
+
 # VintageGAN: Controllable Vintage Image Synthesis
 
 VintageGAN is an academic portfolio project for learning controllable vintage
