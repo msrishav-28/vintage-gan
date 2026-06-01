@@ -124,7 +124,7 @@ def _download_from_huggingface(
             "imagenet-1k",
             split="train",
             streaming=True,  # Stream to avoid downloading entire dataset
-            trust_remote_code=True
+            trust_remote_code=False
         )
         
         # Set random seed for reproducibility

@@ -7,38 +7,54 @@ Modules:
     generator: U-Net with ResNet34 encoder and conditioning
     discriminator: PatchGAN discriminator with conditioning
     attention: Self-attention and CBAM modules
-    detectors: Defect detection networks (to be implemented Day 10)
+    detectors: Optional defect detection networks
 """
 
 from .attention import SelfAttention, ChannelAttention, SpatialAttention, CBAM
 from .generator import Generator, ConditionProjection, SpectralNorm
 from .discriminator import Discriminator, MultiScaleDiscriminator
-from .detectors import DefectDetector, MultiDefectDetector, create_detectors, train_detectors
 
 __all__ = [
     # Attention modules
-    'SelfAttention',
-    'ChannelAttention',
-    'SpatialAttention',
-    'CBAM',
-    
+    "SelfAttention",
+    "ChannelAttention",
+    "SpatialAttention",
+    "CBAM",
     # Generator
-    'Generator',
-    'ConditionProjection',
-    
+    "Generator",
+    "ConditionProjection",
     # Discriminator
-    'Discriminator',
-    'MultiScaleDiscriminator',
-    
-    # Detectors
-    'DefectDetector',
-    'MultiDefectDetector',
-    'create_detectors',
-    'train_detectors',
-    
+    "Discriminator",
+    "MultiScaleDiscriminator",
     # Utilities
-    'SpectralNorm',
+    "SpectralNorm",
 ]
 
-__version__ = '0.1.0'
-__author__ = 'VintageGAN Project'
+
+def __getattr__(name):
+    """Lazily import detector utilities so basic model imports stay lightweight."""
+    if name in {
+        "DefectDetector",
+        "MultiDefectDetector",
+        "create_detectors",
+        "train_detectors",
+    }:
+        from .detectors import (
+            DefectDetector,
+            MultiDefectDetector,
+            create_detectors,
+            train_detectors,
+        )
+
+        exports = {
+            "DefectDetector": DefectDetector,
+            "MultiDefectDetector": MultiDefectDetector,
+            "create_detectors": create_detectors,
+            "train_detectors": train_detectors,
+        }
+        return exports[name]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+__version__ = "0.1.0"
+__author__ = "VintageGAN Project"

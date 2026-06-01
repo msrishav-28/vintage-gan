@@ -22,28 +22,39 @@ from .blur import generate_blur
 from .combined import (
     apply_vintage_defects,
     generate_random_conditions,
-    create_preset_conditions,
     batch_apply_defects,
-    visualize_defect_progression
+    visualize_defect_progression,
+)
+from .presets import (
+    CONDITION_NAMES,
+    create_preset_conditions,
+    condition_dict_to_vector,
+    condition_vector_to_dict,
+    load_presets,
+    validate_condition_vector,
 )
 
 __all__ = [
     # Individual defects
-    'generate_film_grain',
-    'generate_colored_grain',
-    'generate_scratches',
-    'generate_dust',
-    'generate_vignette',
-    'generate_color_shift',
-    'generate_blur',
-    
+    "generate_film_grain",
+    "generate_colored_grain",
+    "generate_scratches",
+    "generate_dust",
+    "generate_vignette",
+    "generate_color_shift",
+    "generate_blur",
     # Combined application
-    'apply_vintage_defects',
-    'generate_random_conditions',
-    'create_preset_conditions',
-    'batch_apply_defects',
-    'visualize_defect_progression',
+    "apply_vintage_defects",
+    "generate_random_conditions",
+    "create_preset_conditions",
+    "batch_apply_defects",
+    "visualize_defect_progression",
+    "CONDITION_NAMES",
+    "condition_dict_to_vector",
+    "condition_vector_to_dict",
+    "load_presets",
+    "validate_condition_vector",
 ]
 
-__version__ = '0.1.0'
-__author__ = 'VintageGAN Project'
+__version__ = "0.1.0"
+__author__ = "VintageGAN Project"

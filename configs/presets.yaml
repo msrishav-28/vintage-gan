@@ -1,0 +1,23 @@
+# Explicit condition presets for inference and demos.
+# Order: grain, scratch, dust, vignette, color_shift, blur.
+
+condition_names:
+  - grain
+  - scratch
+  - dust
+  - vignette
+  - color_shift
+  - blur
+
+presets:
+  soft_fade: [0.25, 0.05, 0.08, 0.20, 0.45, 0.05]
+  warm_film: [0.40, 0.12, 0.10, 0.25, 0.65, 0.08]
+  dusty_archive: [0.45, 0.20, 0.65, 0.45, 0.55, 0.15]
+  scratched_negative: [0.35, 0.85, 0.35, 0.35, 0.50, 0.18]
+  heavy_vintage: [0.75, 0.55, 0.45, 0.70, 0.80, 0.35]
+  light: [0.30, 0.10, 0.10, 0.20, 0.20, 0.00]
+  medium: [0.50, 0.30, 0.20, 0.40, 0.50, 0.20]
+  heavy: [0.80, 0.60, 0.40, 0.70, 0.80, 0.40]
+  grain_only: [0.70, 0.00, 0.00, 0.00, 0.00, 0.00]
+  faded: [0.40, 0.20, 0.30, 0.50, 0.80, 0.10]
+  scratched: [0.30, 0.90, 0.40, 0.30, 0.40, 0.20]

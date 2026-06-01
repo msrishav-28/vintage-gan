@@ -1,0 +1,7 @@
+# RTX 3050 / local CUDA 11.8 profile tested for Python 3.10-3.11.
+--extra-index-url https://download.pytorch.org/whl/cu118
+
+torch==2.3.1+cu118
+torchvision==0.18.1+cu118
+
+-r requirements.txt

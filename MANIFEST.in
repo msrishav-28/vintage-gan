@@ -1,9 +1,8 @@
 include README.md
 include LICENSE
 include requirements.txt
-include COMPLETE_IMPLEMENTATION.md
-include DAYS_1_7_COMPLETION.md
-include DAY_1_2_COMPLETION.md
+include requirements-local-cu118.txt
+include requirements-cloud-cu121.txt
 
 recursive-include configs *.yaml
 recursive-include notebooks *.ipynb
